@@ -25,7 +25,7 @@ const Login = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []);
 
-    const loginWithGoogle = () => useGoogleLogin({
+    const loginWithGoogle = useGoogleLogin({
         onSuccess: async res => {
             cookies.set('token', res.access_token, {
                 maxAge: res.expires_in,
@@ -81,14 +81,14 @@ const Login = () => {
                         </div>
 
                         <div className="mt-8">
-                            <button onClick={loginWithGoogle} className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
+                            <button onClick={ () => loginWithGoogle() } className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
                                 <div className="px-4 py-2">
                                     <img className="w-6 h-6" src={ googleLogo } alt="" />
                                 </div>
 
                                 <span className="w-5/6 px-4 py-3 font-bold text-center">Sign in with Google</span>
                             </button>
-                            <button onClick={loginWithMicrosoft} className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
+                            <button onClick={ loginWithMicrosoft } className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
                                 <div className="px-4 py-2">
                                     <img className="w-6 h-6" src={ microsoftLogo } alt="" />
                                 </div>
