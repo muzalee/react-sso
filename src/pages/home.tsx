@@ -9,14 +9,15 @@ import { useMsal } from '@azure/msal-react';
 const Home = () => {
     const cookies = new Cookies();
     const navigate = useNavigate();
-    const { instance } = useMsal();
+    const { instance, accounts } = useMsal();
     const [isGoogle, setIsGoogle] = useState(false);
+    const mAccount = instance.getActiveAccount();
 
     useEffect(() => {
         document.title = "React SSO - Home";
 
         const token = cookies.get('token') as string;
-        if (!token && !instance.getActiveAccount()) {
+        if (!token && !mAccount) {
             navigate('/');
         }
 
@@ -27,9 +28,17 @@ const Home = () => {
     }, []);
 
     const logout = () => {
-        googleLogout();
-        cookies.remove('token');
-        navigate('/');
+        if (isGoogle) {
+            googleLogout();
+            cookies.remove('token');
+            navigate('/');
+        } else {
+            const logoutRequest = {
+                account: instance.getAccountByHomeId(accounts[0]?.homeAccountId),
+                mainWindowRedirectUri: '/',
+            };
+            instance.logoutPopup(logoutRequest);
+        }
     }
 
     return (
@@ -43,7 +52,6 @@ const Home = () => {
                 </div>
             </nav>
             <div className="flex items-center justify-center grow">
-                <span className="text-gray-50">Home</span>
                 <span className="text-gray-50">{ isGoogle ? 'Logged in with Google' : 'Logged in with Microsoft' }</span>
             </div>
         </div>

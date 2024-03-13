@@ -6,23 +6,25 @@ import { useGoogleLogin  } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { useMsal } from '@azure/msal-react';
+import { loginRequest } from '@/configs/msal-config';
 
 const Login = () => {
     const navigate = useNavigate();
     const cookies = new Cookies();
     const { instance } = useMsal();
+    const mAccount = instance.getActiveAccount();
 
     useEffect(() => {
         document.title = "React SSO - Login";
 
         const token = cookies.get('token') as string;
-        if (token || instance.getActiveAccount()) {
+        if (token || mAccount) {
             navigate('/home');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []);
 
-    const login = useGoogleLogin({
+    const loginWithGoogle = useGoogleLogin({
         onSuccess: res => {
             cookies.set('token', res.access_token, {
                 maxAge: res.expires_in,
@@ -30,6 +32,15 @@ const Login = () => {
             navigate('/home');
         },
     });
+
+    const loginWithMicrosoft = () => {
+        instance.loginPopup({
+            ...loginRequest,
+            prompt: 'select_account',
+        }).then(() => {
+            navigate('/home');
+        });
+    }
 
     return (
         <div className="bg-gray-900">
@@ -59,14 +70,14 @@ const Login = () => {
                         </div>
 
                         <div className="mt-8">
-                            <button onClick={login} className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
+                            <button onClick={loginWithGoogle} className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
                                 <div className="px-4 py-2">
                                     <img className="w-6 h-6" src={ googleLogo } alt="" />
                                 </div>
 
                                 <span className="w-5/6 px-4 py-3 font-bold text-center">Sign in with Google</span>
                             </button>
-                            <button className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
+                            <button onClick={loginWithMicrosoft} className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
                                 <div className="px-4 py-2">
                                     <img className="w-6 h-6" src={ microsoftLogo } alt="" />
                                 </div>
