@@ -3,20 +3,30 @@ import reactLogo from '@/assets/react.svg';
 import googleLogo from '@/assets/google.svg';
 import { useGoogleLogin  } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 
 const Login = () => {
+    const navigate = useNavigate();
+    const cookies = new Cookies();
+
     useEffect(() => {
         document.title = "React SSO - Login";
-     }, []);
 
-    const navigate = useNavigate();
+        const token = cookies.get('token') as string;
+        if (token) {
+            navigate('/home');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+     }, []);
 
     const login = useGoogleLogin({
         onSuccess: codeResponse => {
-            console.log(codeResponse);
+            cookies.set('token', codeResponse.access_token, {
+                maxAge: codeResponse.expires_in,
+            });
             navigate('/home');
         },
-      });
+    });
 
     return (
         <div className="bg-gray-900">
