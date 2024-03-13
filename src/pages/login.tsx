@@ -1,19 +1,22 @@
 import React, { useEffect } from 'react';
 import reactLogo from '@/assets/react.svg';
 import googleLogo from '@/assets/google.svg';
+import microsoftLogo from '@/assets/microsoft.svg';
 import { useGoogleLogin  } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
+import { useMsal } from '@azure/msal-react';
 
 const Login = () => {
     const navigate = useNavigate();
     const cookies = new Cookies();
+    const { instance } = useMsal();
 
     useEffect(() => {
         document.title = "React SSO - Login";
 
         const token = cookies.get('token') as string;
-        if (token) {
+        if (token || instance.getActiveAccount()) {
             navigate('/home');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,6 +65,13 @@ const Login = () => {
                                 </div>
 
                                 <span className="w-5/6 px-4 py-3 font-bold text-center">Sign in with Google</span>
+                            </button>
+                            <button className="flex w-full items-center justify-center mt-4 transition-colors duration-300 transform border rounded-lg border-gray-700 text-gray-200 hover:bg-gray-600">
+                                <div className="px-4 py-2">
+                                    <img className="w-6 h-6" src={ microsoftLogo } alt="" />
+                                </div>
+
+                                <span className="w-5/6 px-4 py-3 font-bold text-center">Sign in with Microsoft</span>
                             </button>
                         </div>
                     </div>

@@ -1,20 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import { useNavigate } from 'react-router-dom';
 import reactLogo from '@/assets/react.svg';
 import logoutLogo from '@/assets/logout.svg';
 import { googleLogout  } from '@react-oauth/google';
+import { useMsal } from '@azure/msal-react';
 
 const Home = () => {
     const cookies = new Cookies();
     const navigate = useNavigate();
+    const { instance } = useMsal();
+    const [isGoogle, setIsGoogle] = useState(false);
 
     useEffect(() => {
         document.title = "React SSO - Home";
 
         const token = cookies.get('token') as string;
-        if (!token) {
+        if (!token && !instance.getActiveAccount()) {
             navigate('/');
+        }
+
+        if (token) {
+            setIsGoogle(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -37,6 +44,7 @@ const Home = () => {
             </nav>
             <div className="flex items-center justify-center grow">
                 <span className="text-gray-50">Home</span>
+                <span className="text-gray-50">{ isGoogle ? 'Logged in with Google' : 'Logged in with Microsoft' }</span>
             </div>
         </div>
     );    

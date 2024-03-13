@@ -4,7 +4,7 @@ export const msalConfig = {
     auth: {
         clientId: import.meta.env.VITE_AZURE_CLIENT_ID as string,
         authority: 'https://login.microsoftonline.com/YOUR_TENANT_ID',
-        redirectUri: '/home',
+        redirectUri: '/',
         postLogoutRedirectUri: '/',
         navigateToLoginRequestUrl: false,
     },
