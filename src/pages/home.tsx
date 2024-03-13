@@ -12,6 +12,7 @@ const Home = () => {
     const { instance, accounts } = useMsal();
     const [isGoogle, setIsGoogle] = useState(false);
     const mAccount = instance.getActiveAccount();
+    const userName = cookies.get('user_name') as string;
 
     useEffect(() => {
         document.title = "React SSO - Home";
@@ -51,8 +52,9 @@ const Home = () => {
                     </button>
                 </div>
             </nav>
-            <div className="flex items-center justify-center grow">
-                <span className="text-gray-50">{ isGoogle ? 'Logged in with Google' : 'Logged in with Microsoft' }</span>
+            <div className="flex flex-col items-center justify-center grow">
+                <span className="text-gray-50">Welcome { userName ?? '' }</span>
+                <span className="text-gray-50 text-xs">{ isGoogle ? 'Logged in with Google' : 'Logged in with Microsoft' }</span>
             </div>
         </div>
     );    
