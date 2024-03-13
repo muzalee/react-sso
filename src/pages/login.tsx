@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@/configs/msal-config';
+import axios from 'axios';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -25,11 +26,20 @@ const Login = () => {
      }, []);
 
     const loginWithGoogle = useGoogleLogin({
-        onSuccess: res => {
+        onSuccess: async res => {
             cookies.set('token', res.access_token, {
                 maxAge: res.expires_in,
             });
-            navigate('/home');
+
+            await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${res.access_token}` },
+            }).then(userRes => {
+                cookies.set('user_name', userRes.data.name, {
+                    maxAge: res.expires_in,
+                });
+
+                navigate('/home');
+            });                  
         },
     });
 
@@ -37,7 +47,8 @@ const Login = () => {
         instance.loginPopup({
             ...loginRequest,
             prompt: 'select_account',
-        }).then(() => {
+        }).then((res) => {
+            cookies.set('user_name', res.account.name);
             navigate('/home');
         });
     }
