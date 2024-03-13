@@ -9,9 +9,10 @@ import { msalConfig } from "./configs/msal-config";
 import { MsalProvider } from "@azure/msal-react";
 
 const msalInstance = new PublicClientApplication(msalConfig);
+const accounts = msalInstance.getAllAccounts();
 
-if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
-  msalInstance.setActiveAccount(msalInstance.getActiveAccount()[0]);
+if (!msalInstance.getActiveAccount() && accounts?.length > 0) {
+  msalInstance.setActiveAccount(accounts[0]);
 }
 
 msalInstance.addEventCallback((event: EventMessage) => {
