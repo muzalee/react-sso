@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import reactLogo from '@/assets/react.svg';
 import googleLogo from '@/assets/google.svg';
 import microsoftLogo from '@/assets/microsoft.svg';
@@ -6,7 +6,7 @@ import { useGoogleLogin  } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { useMsal } from '@azure/msal-react';
-import { loginRequest } from '@/configs/msal-config';
+import { loginRequest } from "../configs/msal-config";
 import axios from 'axios';
 
 const Login = () => {
@@ -25,7 +25,7 @@ const Login = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []);
 
-    const loginWithGoogle = useGoogleLogin({
+    const loginWithGoogle = () => useGoogleLogin({
         onSuccess: async res => {
             cookies.set('token', res.access_token, {
                 maxAge: res.expires_in,
